@@ -1,5 +1,6 @@
 import requests
 import sys
+import csv
 
 from api_params import *
 
@@ -60,6 +61,12 @@ def get_address(raw_data):
     return ', '.join(address)
 
 
+def write_csv(data_list):
+    with open('cian.csv', 'a') as file:
+        writer = csv.writer(file)
+        writer.writerow(data_list)
+
+
 def main():
     all_regions_data = get_response(ALL_REGIONS_URL)
     if all_regions_data['status'] == 'ok':
@@ -80,7 +87,10 @@ def main():
                                     room_area = offer['roomArea']
                                     phones = get_phones(offer['phones'])
                                     address = get_address(offer['geo']['address'])
-                                    print(address)
+                                    offer_type = OFFER_TYPES[offer['offerType']]
+                                    title = '{}, {}/{} м²'.format(offer_type.title(), total_area, room_area)
+                                    write_csv([cian_id, title, address, phones])
+                                    print(title)
                                     sys.exit(0)
 
 
