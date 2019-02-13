@@ -1,3 +1,5 @@
+""" This file contains all api parameters. """
+
 BASE_API_URL = 'https://api.cian.ru/'
 
 OBJECT_URLS = {
