@@ -11,15 +11,15 @@ OBJECT_URLS = {
 ALL_REGIONS_URL = 'https://www.cian.ru/cian-api/site/v1/get-regions/'
 
 ROOM_TYPES = {
-    'only_room': 0,
-    'one_room': 1,
-    'two_room': 2,
-    'three_room': 3,
-    'four_room': 4,
-    'five_room': 5,
-    'six_room': 6,
-    'open_plan': 7,
-    'studio': 9
+    'комната': 0,
+    '1-комн. квартира': 1,
+    '2-комн. квартира': 2,
+    '3-комн. квартира': 3,
+    '4-комн. квартира': 4,
+    '5-комн. квартира': 5,
+    'многокомнатная квартира': 6,
+    'квартира свободной планировки': 7,
+    'студия': 9
 }
 
 REQUEST_TYPES = (
@@ -54,7 +54,3 @@ OFFICE_TYPES = {
 
 TERM = 'term'
 TERMS = 'terms'
-
-OFFER_TYPES = {
-    'flat': 'комната'
-}
