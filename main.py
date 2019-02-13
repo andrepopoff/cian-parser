@@ -45,6 +45,14 @@ def get_request_payload(region_id, room_type, request_type, page_number):
     }
 
 
+def get_phones(raw_data):
+    phone_numbers = []
+    for data in raw_data:
+        phone_number = '+' + data['countryCode'] + data['number']
+        phone_numbers.append(phone_number)
+    return ' '.join(phone_numbers)
+
+
 def main():
     all_regions_data = get_response(ALL_REGIONS_URL)
     if all_regions_data['status'] == 'ok':
@@ -57,8 +65,14 @@ def main():
                         for room_type, room_id in ROOM_TYPES.items():
                             request_payload = get_request_payload(region_id, room_id, request_type, 1)
                             response = get_response(url, 'POST', request_payload)
-                            print(response)
-                            sys.exit(0)
+                            if response['status'] == 'ok':
+                                offers_serialized = response['data']['offersSerialized'][0]
+                                cian_id = offers_serialized['cianId']
+                                total_area = offers_serialized['totalArea']
+                                room_area = offers_serialized['roomArea']
+                                phones = get_phones(offers_serialized['phones'])
+                                print(phones)
+                                sys.exit(0)
 
 
 if __name__ == '__main__':
