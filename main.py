@@ -90,17 +90,22 @@ def main():
                                     for offer in offers_serialized:
                                         cian_id = offer['cianId']
                                         total_area = offer['totalArea']
-                                        room_area = offer['roomArea'] or offer['livingArea']
                                         phones = get_phones(offer['phones'])
                                         address = get_address(offer['geo']['address'])
-                                        title = '{}, {}/{} м²'.format(room_type.title(), total_area, room_area)
+
+                                        if room_id == 0:
+                                            room_area = offer['roomArea'] or offer['livingArea']
+                                            title = '{}, {}/{} м²'.format(room_type.capitalize(), total_area, room_area)
+                                        else:
+                                            title = '{}, {} м²'.format(room_type.capitalize(), total_area)
+
                                         write_csv([cian_id, title, address, phones])
 
                                     if response['data']['suggestOffersSerializedList']:
                                         break
 
                                 page += 1
-                            sys.exit(0)
+                        sys.exit(0)
 
 
 if __name__ == '__main__':
