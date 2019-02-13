@@ -53,6 +53,13 @@ def get_phones(raw_data):
     return ' '.join(phone_numbers)
 
 
+def get_address(raw_data):
+    address = []
+    for data in raw_data:
+        address.append(data['title'])
+    return ', '.join(address)
+
+
 def main():
     all_regions_data = get_response(ALL_REGIONS_URL)
     if all_regions_data['status'] == 'ok':
@@ -66,13 +73,15 @@ def main():
                             request_payload = get_request_payload(region_id, room_id, request_type, 1)
                             response = get_response(url, 'POST', request_payload)
                             if response['status'] == 'ok':
-                                offers_serialized = response['data']['offersSerialized'][0]
-                                cian_id = offers_serialized['cianId']
-                                total_area = offers_serialized['totalArea']
-                                room_area = offers_serialized['roomArea']
-                                phones = get_phones(offers_serialized['phones'])
-                                print(phones)
-                                sys.exit(0)
+                                offers_serialized = response['data']['offersSerialized']
+                                for offer in offers_serialized:
+                                    cian_id = offer['cianId']
+                                    total_area = offer['totalArea']
+                                    room_area = offer['roomArea']
+                                    phones = get_phones(offer['phones'])
+                                    address = get_address(offer['geo']['address'])
+                                    print(address)
+                                    sys.exit(0)
 
 
 if __name__ == '__main__':
