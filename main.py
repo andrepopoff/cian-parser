@@ -1,11 +1,13 @@
 import requests
 import sys
 import csv
+import time
 
 from api_params import *
 
 
 def get_response(url, request_type='GET', params=None):
+    time.sleep(5)
     if request_type == 'GET':
         response = requests.get(url, json=params)
     elif request_type == 'POST':
@@ -51,7 +53,7 @@ def get_phones(raw_data):
     for data in raw_data:
         phone_number = '+' + data['countryCode'] + data['number']
         phone_numbers.append(phone_number)
-    return ' '.join(phone_numbers)
+    return ', '.join(phone_numbers)
 
 
 def get_address(raw_data):
@@ -77,21 +79,28 @@ def main():
                 for name, url in OBJECT_URLS.items():
                     if name == 'another_objects':
                         for room_type, room_id in ROOM_TYPES.items():
-                            request_payload = get_request_payload(region_id, room_id, request_type, 1)
-                            response = get_response(url, 'POST', request_payload)
-                            if response['status'] == 'ok':
-                                offers_serialized = response['data']['offersSerialized']
-                                for offer in offers_serialized:
-                                    cian_id = offer['cianId']
-                                    total_area = offer['totalArea']
-                                    room_area = offer['roomArea']
-                                    phones = get_phones(offer['phones'])
-                                    address = get_address(offer['geo']['address'])
-                                    offer_type = OFFER_TYPES[offer['offerType']]
-                                    title = '{}, {}/{} м²'.format(offer_type.title(), total_area, room_area)
-                                    write_csv([cian_id, title, address, phones])
-                                    print(title)
-                                    sys.exit(0)
+                            page = 1
+                            while True:
+                                request_payload = get_request_payload(region_id, room_id, request_type, page)
+                                response = get_response(url, 'POST', request_payload)
+
+                                if response['status'] == 'ok':
+                                    offers_serialized = response['data']['offersSerialized']
+
+                                    for offer in offers_serialized:
+                                        cian_id = offer['cianId']
+                                        total_area = offer['totalArea']
+                                        room_area = offer['roomArea'] or offer['livingArea']
+                                        phones = get_phones(offer['phones'])
+                                        address = get_address(offer['geo']['address'])
+                                        title = '{}, {}/{} м²'.format(room_type.title(), total_area, room_area)
+                                        write_csv([cian_id, title, address, phones])
+
+                                    if response['data']['suggestOffersSerializedList']:
+                                        break
+
+                                page += 1
+                            sys.exit(0)
 
 
 if __name__ == '__main__':
