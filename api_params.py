@@ -51,3 +51,6 @@ OFFICE_TYPES = {
     'premises': 5,
     'garage': 6
 }
+
+TERM = 'term'
+TERMS = 'terms'
