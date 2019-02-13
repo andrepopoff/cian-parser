@@ -54,3 +54,7 @@ OFFICE_TYPES = {
 
 TERM = 'term'
 TERMS = 'terms'
+
+OFFER_TYPES = {
+    'flat': 'комната'
+}
