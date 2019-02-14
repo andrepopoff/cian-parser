@@ -1,8 +1,5 @@
 """ This file contains all api parameters. """
 
-from itertools import cycle
-
-
 BASE_API_URL = 'https://api.cian.ru/'
 SEARCH_OFFERS_URL = BASE_API_URL + 'search-offers/v2/search-offers-desktop/'
 ALL_REGIONS_URL = 'https://www.cian.ru/cian-api/site/v1/get-regions/'
@@ -53,12 +50,10 @@ OFFICE_TYPES = {
 TERM = 'term'
 TERMS = 'terms'
 
-PROXIES = [
-    'dIyKsL:l4uuIfl27Ri@185.154.20.95:3000/',
-    'dIyKsL:l4uuIfl27Ri@185.154.21.103:3000/',
-    'dIyKsL:l4uuIfl27Ri@185.154.21.104:3000/',
-    'dIyKsL:l4uuIfl27Ri@185.154.21.107:3000/',
-    'dIyKsL:l4uuIfl27Ri@185.154.21.108:3000/'
-]
-
-PROXY_CYCLE = cycle(PROXIES)
+# PROXIES = [
+#     'dIyKsL:l4uuIfl27Ri@185.154.20.95:3000/',
+#     'dIyKsL:l4uuIfl27Ri@185.154.21.103:3000/',
+#     'dIyKsL:l4uuIfl27Ri@185.154.21.104:3000/',
+#     'dIyKsL:l4uuIfl27Ri@185.154.21.107:3000/',
+#     'dIyKsL:l4uuIfl27Ri@185.154.21.108:3000/'
+# ]
