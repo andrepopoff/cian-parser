@@ -5,25 +5,24 @@ import time
 from api_params import *
 
 
-def get_response(url, request_type='GET', params=None, proxy=None):
+def get_response(url, request_type='GET', params=None):
     """
     Gets response from server
 
     :param url: Url string
     :param request_type: Request type string ('GET' or 'POST')
     :param params: Dictionary with request payload data
-    :param proxy: String with proxy data or None
     :return: Server response dictionary
     """
-    if proxy:
-        proxy = {'http': 'http://' + proxy, 'https': 'https://' + proxy}
+    proxy = next(PROXY_CYCLE)
+    proxies_dict = {'http': 'http://' + proxy, 'https': 'https://' + proxy}
 
-    time.sleep(10)
+    time.sleep(5)
 
     if request_type == 'GET':
-        response = requests.get(url, json=params, proxies=proxy, timeout=5)
+        response = requests.get(url, json=params, proxies=proxies_dict, timeout=5)
     elif request_type == 'POST':
-        response = requests.post(url, json=params, proxies=proxy, timeout=5)
+        response = requests.post(url, json=params, proxies=proxies_dict, timeout=5)
     else:
         raise AttributeError('Request type must be GET or POST!')
 
@@ -202,11 +201,10 @@ def parse_data(region_id, obj_id, obj_type, request_type, for_day_value):
     :param for_day_value: <class 'str'> Equal to '!1' if renting for a long term, or equal to '1' if renting for a day
     :return: None
     """
-    proxy = next(PROXY_CYCLE)
     page = 1
     while True:
         request_payload = get_request_payload(region_id, obj_id, request_type, page, for_day_value)
-        response = get_response(SEARCH_OFFERS_URL, 'POST', request_payload, proxy)
+        response = get_response(SEARCH_OFFERS_URL, 'POST', request_payload)
 
         if response['status'] == 'ok':
             for offer in response['data']['offersSerialized']:
