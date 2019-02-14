@@ -49,6 +49,3 @@ OFFICE_TYPES = {
 
 TERM = 'term'
 TERMS = 'terms'
-
-with open('proxies.txt', 'r') as file:
-    PROXIES = file.readlines()
