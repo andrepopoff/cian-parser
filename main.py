@@ -6,6 +6,16 @@ import random
 from api_params import *
 
 
+def get_proxies():
+    """
+    Reads proxies from txt file
+
+    :return: List with proxies
+    """
+    with open('proxies.txt', 'r') as file:
+        return file.readlines()
+
+
 def get_response(url, request_type='GET', params=None):
     """
     Gets response from server
@@ -18,7 +28,7 @@ def get_response(url, request_type='GET', params=None):
     time.sleep(10)
 
     for _ in range(20):
-        proxy = random.choice(PROXIES)
+        proxy = random.choice(get_proxies())
         proxy_dict = {'http': 'http://' + proxy, 'https': 'https://' + proxy}
 
         try:
@@ -245,6 +255,7 @@ def main():
                     # Go through all object types
                     for obj_type, obj_id in object_types_dict.items():
                         parse_data(region_data['id'], obj_id, obj_type, request_type, day_value)
+
 
 if __name__ == '__main__':
     main()
