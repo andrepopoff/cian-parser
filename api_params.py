@@ -50,10 +50,10 @@ OFFICE_TYPES = {
 TERM = 'term'
 TERMS = 'terms'
 
-# PROXIES = [
-#     'dIyKsL:l4uuIfl27Ri@185.154.20.95:3000/',
-#     'dIyKsL:l4uuIfl27Ri@185.154.21.103:3000/',
-#     'dIyKsL:l4uuIfl27Ri@185.154.21.104:3000/',
-#     'dIyKsL:l4uuIfl27Ri@185.154.21.107:3000/',
-#     'dIyKsL:l4uuIfl27Ri@185.154.21.108:3000/'
-# ]
+PROXIES = [
+    'dIyKsL:l4uuIfl27Ri@185.154.20.95:3000/',
+    'dIyKsL:l4uuIfl27Ri@185.154.21.103:3000/',
+    'dIyKsL:l4uuIfl27Ri@185.154.21.104:3000/',
+    'dIyKsL:l4uuIfl27Ri@185.154.21.107:3000/',
+    'dIyKsL:l4uuIfl27Ri@185.154.21.108:3000/'
+]
