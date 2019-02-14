@@ -1,13 +1,10 @@
 """ This file contains all api parameters. """
 
+from itertools import cycle
+
+
 BASE_API_URL = 'https://api.cian.ru/'
-
-OBJECT_URLS = {
-    'new_buildings': BASE_API_URL + 'newbuilding-search/v1/get-newbuildings-for-serp/',
-    'villages': BASE_API_URL + 'countryside-search/v1/get-village-list/',
-    'another_objects': BASE_API_URL + 'search-offers/v2/search-offers-desktop/',
-}
-
+SEARCH_OFFERS_URL = BASE_API_URL + 'search-offers/v2/search-offers-desktop/'
 ALL_REGIONS_URL = 'https://www.cian.ru/cian-api/site/v1/get-regions/'
 
 ROOM_TYPES = {
@@ -19,7 +16,8 @@ ROOM_TYPES = {
     '5-комн. квартира': 5,
     'многокомнатная квартира': 6,
     'квартира свободной планировки': 7,
-    'студия': 9
+    'студия': 9,
+    'койко-место': 10
 }
 
 REQUEST_TYPES = (
@@ -39,18 +37,28 @@ FOR_DAY_PARAMS = {
 }
 
 SUBURBAN_OBJECT_TYPES = {
-    'house': 1,
-    'land': 3,
-    'townhouse': 4
+    'дом': 1,
+    'участок': 3,
+    'таунхаус': 4
 }
 
 OFFICE_TYPES = {
-    'office': 1,
-    'commercial_space': 2,
-    'storage': 3,
-    'premises': 5,
-    'garage': 6
+    'офис': 1,
+    'торговая площадь': 2,
+    'склад': 3,
+    'помещение': 5,
+    'гараж': 6
 }
 
 TERM = 'term'
 TERMS = 'terms'
+
+PROXIES = [
+    'dIyKsL:l4uuIfl27Ri@185.154.20.95:3000/',
+    'dIyKsL:l4uuIfl27Ri@185.154.21.103:3000/',
+    'dIyKsL:l4uuIfl27Ri@185.154.21.104:3000/',
+    'dIyKsL:l4uuIfl27Ri@185.154.21.107:3000/',
+    'dIyKsL:l4uuIfl27Ri@185.154.21.108:3000/'
+]
+
+PROXY_CYCLE = cycle(PROXIES)
