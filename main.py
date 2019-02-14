@@ -20,8 +20,8 @@ def get_response(url, request_type='GET', params=None):
     raise ValueError('Content type is not json object!')
 
 
-def get_request_payload(region_id, room_type, request_type, page_number):
-    return {
+def get_request_payload(region_id, room_type, request_type, page_number, for_day_value="!1"):
+    data = {
         "jsonQuery": {
             "region": {
                 "type": TERMS,
@@ -46,6 +46,14 @@ def get_request_payload(region_id, room_type, request_type, page_number):
             }
         }
     }
+
+    if request_type == 'flatrent':
+        data["for_day"] = {
+            "type": TERM,
+            "value": for_day_value
+        }
+
+    return data
 
 
 def get_phones(raw_data):
@@ -76,35 +84,42 @@ def main():
             region_id = region_data['id']
 
             for request_type in REQUEST_TYPES:
+
+                if request_type == 'flatrent':
+                    for_day_values = FOR_DAY_PARAMS
+                else:
+                    for_day_values = {'more_than_one': '!1'}
+
                 for name, url in OBJECT_URLS.items():
                     if name == 'another_objects':
-                        for room_type, room_id in ROOM_TYPES.items():
-                            page = 1
-                            while True:
-                                request_payload = get_request_payload(region_id, room_id, request_type, page)
-                                response = get_response(url, 'POST', request_payload)
+                        for day_type, day_idx in for_day_values.items():
+                            for room_type, room_id in ROOM_TYPES.items():
+                                page = 1
+                                while True:
+                                    request_payload = get_request_payload(region_id, room_id, request_type, page, day_idx)
+                                    response = get_response(url, 'POST', request_payload)
 
-                                if response['status'] == 'ok':
-                                    offers_serialized = response['data']['offersSerialized']
+                                    if response['status'] == 'ok':
+                                        offers_serialized = response['data']['offersSerialized']
 
-                                    for offer in offers_serialized:
-                                        cian_id = offer['cianId']
-                                        total_area = offer['totalArea']
-                                        phones = get_phones(offer['phones'])
-                                        address = get_address(offer['geo']['address'])
+                                        for offer in offers_serialized:
+                                            cian_id = offer['cianId']
+                                            total_area = offer['totalArea']
+                                            phones = get_phones(offer['phones'])
+                                            address = get_address(offer['geo']['address'])
 
-                                        if room_id == 0:
-                                            room_area = offer['roomArea'] or offer['livingArea']
-                                            title = '{}, {}/{} м²'.format(room_type.capitalize(), total_area, room_area)
-                                        else:
-                                            title = '{}, {} м²'.format(room_type.capitalize(), total_area)
+                                            if room_id == 0:
+                                                room_area = offer['roomArea'] or offer['livingArea'] or total_area
+                                                title = '{}, {}/{} м²'.format(room_type.capitalize(), total_area, room_area)
+                                            else:
+                                                title = '{}, {} м²'.format(room_type.capitalize(), total_area)
 
-                                        write_csv([cian_id, title, address, phones])
+                                            write_csv([cian_id, title, address, phones])
 
-                                    if response['data']['suggestOffersSerializedList']:
-                                        break
+                                        if response['data']['suggestOffersSerializedList']:
+                                            break
 
-                                page += 1
+                                    page += 1
                         sys.exit(0)
 
 
