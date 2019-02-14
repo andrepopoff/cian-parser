@@ -1,8 +1,33 @@
 import requests
 import csv
 import time
+import random
+
+from bs4 import BeautifulSoup
 
 from api_params import *
+
+
+def get_proxy():
+    """
+    Parses free proxy from https://free-proxy-list.net/ and returns 1 random proxy
+
+    :return: Dictionary with proxy data
+    """
+    html = requests.get('https://free-proxy-list.net/').text
+    soup = BeautifulSoup(html, 'lxml')
+    trs = soup.find('table', id='proxylisttable').find_all('tr')[1:19]
+    proxies = []
+
+    for tr in trs:
+        tds = tr.find_all('td')
+        ip = tds[0].text.strip()
+        port = tds[1].text.strip()
+        schema = 'https' if 'yes' in tds[6].text.strip() else 'http'
+        proxy = {'schema': schema, 'address': ip + ':' + port}
+        proxies.append(proxy)
+
+    return random.choice(proxies)
 
 
 def get_response(url, request_type='GET', params=None):
@@ -14,23 +39,30 @@ def get_response(url, request_type='GET', params=None):
     :param params: Dictionary with request payload data
     :return: Server response dictionary
     """
-    proxy = next(PROXY_CYCLE)
-    proxies_dict = {'http': 'http://' + proxy, 'https': 'https://' + proxy}
+    time.sleep(10)
 
-    time.sleep(5)
+    for _ in range(20):
+        proxies_params = get_proxy()
+        proxy_dict = {proxies_params['schema']: proxies_params['address']}
 
-    if request_type == 'GET':
-        response = requests.get(url, json=params, proxies=proxies_dict, timeout=5)
-    elif request_type == 'POST':
-        response = requests.post(url, json=params, proxies=proxies_dict, timeout=5)
-    else:
-        raise AttributeError('Request type must be GET or POST!')
+        # proxy = random.choice(PROXIES)
+        # proxy_dict = {'http': 'http://' + proxy, 'https': 'https://' + proxy}
 
-    if 'json' in response.headers['Content-Type']:
-        return response.json()
-    else:
-        print(response.text)
-        raise ValueError('Content type is not json object!')
+        try:
+            if request_type == 'GET':
+                response = requests.get(url, json=params, proxies=proxy_dict, timeout=10)
+            elif request_type == 'POST':
+                response = requests.post(url, json=params, proxies=proxy_dict, timeout=10)
+            else:
+                raise AttributeError('Request type must be GET or POST!')
+        except requests.exceptions.ProxyError:
+            pass
+        else:
+            if 'json' in response.headers['Content-Type']:
+                return response.json()
+            else:
+                print(response.text)
+                raise ValueError('Content type is not json object!')
 
 
 def get_request_payload(region_id, room_type, request_type, page_number, for_day_value="!1"):
