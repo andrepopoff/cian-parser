@@ -26,7 +26,7 @@ REQUEST_TYPES = (
     'commercialrent'
 )
 
-ENGINE_VERSION_NUM = 2
+ENGINE_VERSION = 2
 
 FOR_DAY_PARAMS = {
     'one': '1',
