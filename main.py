@@ -68,6 +68,32 @@ class CianParser:
                     print(response.text)
                     raise ValueError('Content type is not json object!')
 
+    @staticmethod
+    def add_object_type_to_request_payload(room_type, request_type, data):
+        """
+        Adds object type data to the request payload data
+
+        :param room_type: <class 'int'> Room type
+        :param request_type: <class 'str'> Request type
+        :param data: Dictionary with request payload data
+        :return: None
+        """
+        object_type_data = {
+            "type": api_params.TERMS,
+            "value": [
+                room_type
+            ]
+        }
+
+        if 'suburban' in request_type:
+            data["object_type"] = object_type_data
+        elif 'flat' in request_type:
+            data["room"] = object_type_data
+        elif 'commercial' in request_type:
+            data["office_type"] = object_type_data
+        else:
+            raise ValueError('Unknown request type!')
+
     def get_request_payload(self, region_id, room_type, request_type, page_number, for_day_val="!1"):
         """
         Gets request payload data
@@ -105,22 +131,7 @@ class CianParser:
                 "value": for_day_val
             }
 
-        object_type_data = {
-                "type": api_params.TERMS,
-                "value": [
-                    room_type
-                ]
-            }
-
-        if 'suburban' in request_type:
-            data["object_type"] = object_type_data
-        elif 'flat' in request_type:
-            data["room"] = object_type_data
-        elif 'commercial' in request_type:
-            data["office_type"] = object_type_data
-        else:
-            raise ValueError('Unknown request type!')
-
+        self.add_object_type_to_request_payload(room_type, request_type, data)
         return data
 
     @staticmethod
